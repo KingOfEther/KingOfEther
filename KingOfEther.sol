@@ -27,7 +27,6 @@ contract KingOfEther {
         if (remainingTime() == 0) {
             require(msg.value >= startingValue, "Not enough money sent.");
             pendingWithdrawals[creator] += msg.value;
-            startTime = block.timestamp;
         } else {
             require(msg.sender != richest, "You already are the richest.");
             require(msg.value * 100 >= mostSent * (100 + increasePercentage), "Not enough money sent.");
@@ -35,6 +34,7 @@ contract KingOfEther {
         }
         richest = msg.sender;
         mostSent = msg.value;
+        startTime = block.timestamp;
         emit NewKing(richest, mostSent);
     }
 
