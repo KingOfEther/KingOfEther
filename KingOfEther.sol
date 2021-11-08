@@ -1,60 +1,39 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity >0.6.99 <0.8.0;
+pragma solidity ^0.8.4;
 
 contract KingOfEther {
-    address payable creator;
-    address public richest;
-    uint public mostSent;
+    address public king;
+    uint256 public treasure;
     uint public increasePercentage;
-    uint public startingValue;
-    uint public gameDuration;
-    uint transactionFeePercentage;
-    uint startTime;
 
-    mapping (address => uint) pendingWithdrawals;
+    mapping (address => uint256) pendingWithdrawals;
 
-    event NewKing(address king, uint money);
+    event NewKing(address king, uint256 money);
 
-    constructor(uint _gameDuration, uint _startingValue, uint _increasePercentage, uint _transactionFeePercentage) {
-        creator = msg.sender;
-        gameDuration = _gameDuration;
-        startingValue = _startingValue;
+    constructor(uint _increasePercentage) {
+        king = msg.sender;
         increasePercentage = _increasePercentage;
-        transactionFeePercentage = _transactionFeePercentage;
+        treasure = 1;
     }
 
-    function becomeRichest() public payable {
-        if (remainingTime() == 0) {
-            require(msg.value >= startingValue, "Not enough money sent.");
-            pendingWithdrawals[creator] += msg.value;
-        } else {
-            require(msg.sender != richest, "You already are the richest.");
-            require(msg.value * 100 >= mostSent * (100 + increasePercentage), "Not enough money sent.");
-            pendingWithdrawals[richest] += msg.value;
-        }
-        richest = msg.sender;
-        mostSent = msg.value;
-        startTime = block.timestamp;
-        emit NewKing(richest, mostSent);
+    function becomeKing() public payable {
+        require(msg.sender != king, "You are already the king.");
+        require(msg.value * 100 >= treasure * (100 + increasePercentage), "Not enough money sent.");
+        pendingWithdrawals[king] += msg.value;
+        king = msg.sender;
+        treasure = msg.value;
+        emit NewKing(king, treasure);
     }
 
     function withdraw() public {
-        uint amount = pendingWithdrawals[msg.sender];
-        pendingWithdrawals[msg.sender] = 0;
-        if (msg.sender != creator) {
-            uint fee = amount * transactionFeePercentage / 100;
-            pendingWithdrawals[creator] += fee;
-            amount -= fee;
+        uint256 amount = pendingWithdrawals[msg.sender];
+        if (amount > 0) {
+            pendingWithdrawals[msg.sender] = 0;
+            payable(msg.sender).transfer(amount);
         }
-        msg.sender.transfer(amount);
     }
 
-    function amountWithdrawable() public view returns (uint amount) {
-        amount = pendingWithdrawals[msg.sender];
-    }
-
-    function remainingTime() public view returns (uint time) {
-        uint endTime = startTime + gameDuration * 1 minutes;
-        time = (startTime == 0 || block.timestamp >= endTime) ? 0 : endTime - block.timestamp;
+    function amountWithdrawable() public view returns (uint256) {
+        return pendingWithdrawals[msg.sender];
     }
 }
