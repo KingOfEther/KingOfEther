@@ -13,7 +13,7 @@ contract KingOfEther {
     constructor(uint _increasePercentage) {
         king = msg.sender;
         increasePercentage = _increasePercentage;
-        treasure = 1;
+        treasure = 0.1 ether;
     }
 
     function becomeKing() public payable {
