@@ -16,8 +16,9 @@ const tx = {
         arguments: [30]
     }).encodeABI(),
     from: account.address,
-    gas: 8000000,
-    gasPrice: w3.utils.toWei("5", "gwei")
+    gasLimit: 8000000,
+    baseFeePerGas: w3.utils.toWei("95", "gwei"),
+    maxPriorityFeePerGas: w3.utils.toWei("10", "gwei")
 }
 
 account.signTransaction(tx).then(signed => {

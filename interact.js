@@ -32,8 +32,9 @@ const tx = {
     data: Storage.methods.becomeKing().encodeABI(),
     from: account.address,
     to: contract_address,
-    gas: 8000000,
-    gasPrice: w3.utils.toWei("5", "gwei"),
+    gasLimit: 8000000,
+    baseFeePerGas: w3.utils.toWei("95", "gwei"),
+    maxPriorityFeePerGas: w3.utils.toWei("5", "gwei"),
     value: w3.utils.toWei("7", "gwei")
 }
 
