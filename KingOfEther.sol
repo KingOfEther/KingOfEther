@@ -3,12 +3,12 @@ pragma solidity ^0.8.4;
 
 contract KingOfEther {
     address public king;
-    uint256 public treasure;
+    uint public treasure;
     uint public increasePercentage;
 
-    mapping (address => uint256) pendingWithdrawals;
+    mapping (address => uint) pendingWithdrawals;
 
-    event NewKing(address king, uint256 money);
+    event NewKing(address king, uint money);
 
     constructor(uint _increasePercentage) {
         king = msg.sender;
@@ -26,14 +26,14 @@ contract KingOfEther {
     }
 
     function withdraw() public {
-        uint256 amount = pendingWithdrawals[msg.sender];
+        uint amount = pendingWithdrawals[msg.sender];
         if (amount > 0) {
             pendingWithdrawals[msg.sender] = 0;
             payable(msg.sender).transfer(amount);
         }
     }
 
-    function amountWithdrawable() public view returns (uint256) {
+    function amountWithdrawable() public view returns (uint) {
         return pendingWithdrawals[msg.sender];
     }
 }
