@@ -17,12 +17,18 @@ const tx = {
     }).encodeABI(),
     from: account.address,
     gasLimit: 8000000,
-    baseFeePerGas: w3.utils.toWei("95", "gwei"),
+    baseFeePerGas: w3.utils.toWei("1", "gwei"),
     maxPriorityFeePerGas: w3.utils.toWei("10", "gwei")
 }
 
 account.signTransaction(tx).then(signed => {
     w3.eth.sendSignedTransaction(signed.rawTransaction)
     .on("transactionHash", console.log)
-    .on("receipt", console.log)
+    .on("receipt", data => {
+        if (data.status) {
+            console.log("Contract address:", data.contractAddress)
+        } else {
+            console.log("Failed")
+        }
+    })
 })
