@@ -5,8 +5,8 @@ require("dotenv").config()
 const w3 = new Web3(process.env.PROVIDER)
 const account = w3.eth.accounts.privateKeyToAccount(process.env.PRIVATE_KEY)
 
-const contract_abi = JSON.parse(fs.readFileSync("KingOfEther.abi"))
-const contract_bin = "0x" + fs.readFileSync("KingOfEther.bin").toString()
+const contract_abi = JSON.parse(fs.readFileSync("bin/KingOfEther.abi"))
+const contract_bin = "0x" + fs.readFileSync("bin/KingOfEther.bin").toString()
 
 const KingOfEther = new w3.eth.Contract(contract_abi)
 

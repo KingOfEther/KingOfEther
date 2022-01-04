@@ -1,5 +1,5 @@
 all:
-	solc --bin --abi --overwrite -o ./ KingOfEther.sol
+	solc --bin --abi --overwrite -o ./bin contract/KingOfEther.sol
 
 gas:
-	solc --gas KingOfEther.sol
+	solc --gas contract/KingOfEther.sol
