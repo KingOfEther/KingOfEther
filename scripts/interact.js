@@ -30,24 +30,24 @@ Storage.methods.increasePercentage().call().then(data => {
 })
 
 // WRITE
-// const tx = {
-//     data: Storage.methods.withdraw().encodeABI(),
-//     from: account.address,
-//     to: contract_address,
-//     gasLimit: 8000000,
-//     baseFeePerGas: w3.utils.toWei("1", "gwei"),
-//     maxPriorityFeePerGas: w3.utils.toWei("1", "gwei"),
-//     // value: w3.utils.toWei("10", "wei")
-// }
+const tx = {
+    data: Storage.methods.becomeKing().encodeABI(),
+    from: account.address,
+    to: contract_address,
+    gasLimit: 8000000,
+    baseFeePerGas: w3.utils.toWei("1", "gwei"),
+    maxPriorityFeePerGas: w3.utils.toWei("1", "gwei"),
+    value: w3.utils.toWei("10", "wei")
+}
 
-// account.signTransaction(tx).then(signed => {
-//     w3.eth.sendSignedTransaction(signed.rawTransaction)
-//     .on("transactionHash", console.log)
-//     .on("receipt", data => {
-//         if (data.status) {
-//             console.log("Success.")
-//         } else {
-//             console.log("Failed.")
-//         }
-//     })
-// })
+account.signTransaction(tx).then(signed => {
+    w3.eth.sendSignedTransaction(signed.rawTransaction)
+    .on("transactionHash", console.log)
+    .on("receipt", data => {
+        if (data.status) {
+            console.log("Success.")
+        } else {
+            console.log("Failed.")
+        }
+    })
+})
