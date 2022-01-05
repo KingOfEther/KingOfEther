@@ -17,5 +17,5 @@ Create a `.env` file containing: `PROVIDER`, `PRIVATE_KEY` variables. Then,
 ```shell
 make
 npm install
-node deploy.js
+node scripts/deploy.js
 ```
