@@ -1,53 +1,41 @@
 const fs = require("fs")
-const Web3 = require("web3")
+const { ethers } = require("ethers")
 require("dotenv").config()
 
-const w3 = new Web3(process.env.PROVIDER)
-const account = w3.eth.accounts.privateKeyToAccount(process.env.PRIVATE_KEY)
+const provider = new ethers.providers.WebSocketProvider(process.env.PROVIDER)
+const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider)
 
 const contract_abi = JSON.parse(fs.readFileSync("bin/KingOfEther.abi"))
-const contract_address = "0x0043b0B73CfbfFF715c9aB9D3D61d4cf677586Ab"
-
-const Storage = new w3.eth.Contract(contract_abi, contract_address)
-
-console.log("Current address:", account.address)
+const address = "0x42b01b9d786BEe65F0F8D3fBfFFBeeBDe1F1BA5b"
+const contract = new ethers.Contract(address, contract_abi, wallet)
 
 // READ
-Storage.methods.amountWithdrawable().call({from: account.address}).then(data => {
-    console.log("Amount withdrawable:", data)
+contract.functions.amountWithdrawable().then(data => {
+    const amount = parseInt(data[0]._hex, 16)
+    console.log("Amount withdrawable:", amount)
 })
 
-Storage.methods.king().call().then(data => {
-    console.log("Current king:", data)
+contract.functions.king().then(data => {
+    console.log("Current king:", data[0])
 })
 
-Storage.methods.treasure().call().then(data => {
-    console.log("Current treasure:", data)
+contract.functions.treasure().then(data => {
+    const amount = parseInt(data[0]._hex, 16)
+    console.log("Current treasure:", amount)
 })
 
-Storage.methods.increasePercentage().call().then(data => {
-    console.log("Increase percentage:", data)
+contract.functions.increasePercentage().then(data => {
+    const amount = parseInt(data[0]._hex, 16)
+    console.log("Increase percentage:", amount)
 })
 
 // WRITE
-const tx = {
-    data: Storage.methods.becomeKing().encodeABI(),
-    from: account.address,
-    to: contract_address,
-    gasLimit: 8000000,
-    baseFeePerGas: w3.utils.toWei("1", "gwei"),
-    maxPriorityFeePerGas: w3.utils.toWei("1", "gwei"),
-    value: w3.utils.toWei("10", "wei")
-}
+contract.functions.becomeKing({
+    value: 5
+}).then(transaction => {
+    console.log(transaction.hash)
+}).catch(console.error)
 
-account.signTransaction(tx).then(signed => {
-    w3.eth.sendSignedTransaction(signed.rawTransaction)
-    .on("transactionHash", console.log)
-    .on("receipt", data => {
-        if (data.status) {
-            console.log("Success.")
-        } else {
-            console.log("Failed.")
-        }
-    })
-})
+contract.functions.withdraw().then(transaction => {
+    console.log(transaction.hash)
+}).catch(console.error)
